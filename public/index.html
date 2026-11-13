@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#152332"><meta name="description" content="A little celebration for the people who deliver a lot. Package Squad driver appreciation.">
+  <title>Package Squad · The People Behind the Miles</title>
+  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><script type="module" src="/app.js"></script>
+</head>
+<body>
+<svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+ <symbol id="i-box" viewBox="0 0 32 32"><path d="m5 10 11-6 11 6v13l-11 6-11-6zM5 10l11 6 11-6M16 16v13M10.5 7l11 6"/></symbol>
+ <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+ <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 10a8 8 0 1 0-2 8M20 4v6h-6"/></symbol>
+ <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+ <symbol id="i-shield" viewBox="0 0 32 32"><path d="m16 3 11 4v9c0 7-11 13-11 13S5 23 5 16V7zM10 15l4 4 8-8"/></symbol>
+ <symbol id="i-heart" viewBox="0 0 32 32"><path d="M16 27 5 16C-3 7 10-3 16 8c6-11 19-1 11 8z"/></symbol>
+ <symbol id="i-cake" viewBox="0 0 32 32"><path d="M5 17h22v12H5zM5 22c4 4 7-4 11 0s7-4 11 0M10 17v-5m6 5v-5m6 5v-5M10 8v-3m6 3V3m6 5V5"/></symbol>
+ <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol>
+</svg>
+<div class="app-shell">
+ <header class="topbar">
+  <a class="brand" href="/" aria-label="Package Squad home"><span class="brand-mark"><svg><use href="#i-box"/></svg></span><span>PACKAGE<br><strong>SQUAD<span class="brand-dot">®</span></strong></span></a>
+  <div class="header-divider"></div><span class="header-label" data-en="THE PEOPLE BEHIND THE MILES" data-es="LAS PERSONAS DETRÁS DE CADA MILLA">THE PEOPLE BEHIND THE MILES</span>
+  <div class="header-tools"><span class="screen-label"><i></i><span data-en="SQUAD TV" data-es="SQUAD TV">SQUAD TV</span></span><button id="language" class="language" aria-label="Cambiar idioma">ES</button><button id="refresh" class="icon-button" aria-label="Refresh birthdays"><svg><use href="#i-refresh"/></svg></button><button id="fullscreen" class="icon-button" aria-label="Enter fullscreen"><svg><use href="#i-expand"/></svg></button></div>
+ </header>
+ <main>
+  <section class="page-intro">
+   <div><p class="eyebrow"><span class="small-line"></span><span data-en="GOOD PEOPLE. GREAT DELIVERIES." data-es="GRANDES PERSONAS. GRANDES ENTREGAS.">GOOD PEOPLE. GREAT DELIVERIES.</span></p><h1 data-en="You deliver. We celebrate." data-es="Tú entregas. Nosotros celebramos.">You deliver. We celebrate.</h1><p class="intro-copy" data-en="A little spotlight for the squad that goes the extra mile." data-es="Un reconocimiento al equipo que siempre da una milla más.">A little spotlight for the squad that goes the extra mile.</p></div>
+   <div class="clock-block"><div class="clock" id="clock">--:--<span>--</span></div><p id="current-date">NEW JERSEY · EASTERN TIME</p></div>
+  </section>
+  <div class="dashboard-grid">
+   <section class="celebration-card" aria-labelledby="hero-title">
+    <div class="hero-top"><span class="pill"><svg><use href="#i-cake"/></svg><span id="hero-label">A REASON TO CELEBRATE</span></span><span class="hero-edition">THE NOVEMBER EDITION</span></div>
+    <div class="hero-content"><p class="hero-kicker" id="hero-kicker">NEXT UP ON THE ROUTE</p><h2 id="hero-title">Every mile.<br>Every smile.<br><em>All you.</em></h2><div id="hero-person" class="hero-person" hidden><span class="person-line"></span><div><h3 id="hero-name"></h3><p id="hero-detail"></p></div></div><p id="hero-description" class="hero-description">Here's to the people who make it happen.</p></div>
+    <div class="date-sticker" id="date-sticker" hidden><span class="sticker-star">✳</span><span id="sticker-month">NOV</span><strong id="sticker-day">18</strong><small id="sticker-caption">SAVE THE DATE</small></div>
+    <svg class="route-art" viewBox="0 0 760 270" fill="none" aria-hidden="true">
+     <path class="route-path" d="M-40 205H245c70 0 25-105 102-105h100c71 0 17 104 90 104h240" stroke="#f8c94b" stroke-opacity=".25" stroke-width="2" stroke-dasharray="7 9"/>
+     <circle cx="243" cy="205" r="5" fill="#f8c94b"/><circle cx="536" cy="204" r="5" fill="#f8c94b"/>
+     <g transform="translate(408 65) rotate(-5)"><path d="M24 38h128v84H24z" fill="#e9bd52"/><path d="m24 38 64-25 64 25-65 27z" fill="#ffdb76"/><path d="m87 65 65-27v84l-65 25z" fill="#d39e30"/><path d="m65 22 64 26v30l-18 7V55L47 29z" fill="#f6e2ac"/><path d="M40 99h24m-24 8h16" stroke="#152332" stroke-width="3"/></g>
+     <g transform="translate(554 132)"><path d="M0 0h84v62H0z" fill="#ebe7dd"/><path d="M84 22h34l23 25v15H84z" fill="#f8c94b"/><path d="M91 29h22l16 18H91z" fill="#283e50"/><path d="M0 63h145" stroke="#f8c94b" stroke-width="5"/><circle cx="27" cy="65" r="12" fill="#0c1723"/><circle cx="27" cy="65" r="5" fill="#c5c9ca"/><circle cx="115" cy="65" r="12" fill="#0c1723"/><circle cx="115" cy="65" r="5" fill="#c5c9ca"/><path d="m27 17 12-6 12 6v15l-12 6-12-6zM27 17l12 6 12-6m-12 6v15" stroke="#263b4c" stroke-width="2"/><path d="M7 48h24" stroke="#a9b5ba" stroke-width="3"/></g>
+     <path d="m571 42 3 9 9 3-9 3-3 9-3-9-9-3 9-3zM361 137l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#f8c94b"/><path d="m695 87 8-12m-346-39 9 5m100 8-3-10m215 101 8 2" stroke="#f8c94b" stroke-width="3"/>
+    </svg>
+    <div class="hero-bottom"><span data-en="SPECIAL DELIVERY: GOOD VIBES ONLY" data-es="ENTREGA ESPECIAL: BUENA ENERGÍA">SPECIAL DELIVERY: GOOD VIBES ONLY</span><span>PS / 11</span></div>
+   </section>
+   <section class="birthday-panel" aria-labelledby="birthday-title">
+    <div class="section-heading"><p class="eyebrow" data-en="BIRTHDAY ROUTE" data-es="RUTA DE CUMPLEAÑOS">BIRTHDAY ROUTE</p><span class="month-chip" data-en="NOVEMBER" data-es="NOVIEMBRE">NOVEMBER</span></div>
+    <h2 id="birthday-title" data-en="Next stops. More smiles." data-es="Próximas paradas. Más sonrisas.">Next stops. More smiles.</h2><p class="panel-caption" id="panel-caption">Celebrating our November squad.</p>
+    <div id="birthday-list" class="birthday-list" aria-live="polite"><div class="empty-list">Loading the birthday route…</div></div>
+    <button class="month-button" id="show-month"><span data-en="See the whole birthday route" data-es="Ver todos los cumpleaños">See the whole birthday route</span><svg><use href="#i-arrow"/></svg></button>
+   </section>
+   <section class="thanks-card"><div class="message-icon"><svg><use href="#i-heart"/></svg></div><div><p class="eyebrow" data-en="SQUAD APPRECIATION" data-es="GRACIAS, EQUIPO">SQUAD APPRECIATION</p><h2 id="thanks-title">More than packages.<br>You deliver possibilities.</h2><p id="thanks-copy">Your effort makes a difference. Every single day.</p></div><span class="decorative-asterisk" aria-hidden="true">✳</span></section>
+   <section class="safety-card"><div class="message-icon"><svg><use href="#i-shield"/></svg></div><div><p class="eyebrow" data-en="SAFE MILES. EVERY TIME." data-es="CADA MILLA, CON SEGURIDAD.">SAFE MILES. EVERY TIME.</p><h2 id="safety-title">The best delivery?<br>Getting home safely.</h2><p id="safety-copy">Buckle up. Stay focused. Look out for each other.</p><div class="slide-dots" id="slide-dots" aria-label="Rotating safety message"><button class="active" aria-label="Safety message 1"></button><button aria-label="Safety message 2"></button><button aria-label="Safety message 3"></button></div></div></section>
+  </div>
+  <footer class="status-bar"><span class="source-status"><i id="status-dot"></i><span id="source-status">Connecting…</span></span><span class="footer-note" data-en="ONE SQUAD. EVERY MILE. TOGETHER." data-es="UN EQUIPO. CADA MILLA. JUNTOS.">ONE SQUAD. EVERY MILE. TOGETHER.</span><span id="updated-status">—</span></footer>
+ </main>
+ <div class="ticker"><span data-en="DELIVERING WITH HEART" data-es="ENTREGAMOS CON EL CORAZÓN">DELIVERING WITH HEART</span><b>✳</b><span data-en="DRIVEN BY OUR PEOPLE" data-es="NUESTRA GENTE NOS IMPULSA">DRIVEN BY OUR PEOPLE</span><b>✳</b><span data-en="PACKAGE SQUAD PROUD" data-es="ORGULLO PACKAGE SQUAD">PACKAGE SQUAD PROUD</span><b>✳</b><span data-en="EVERY MILE MATTERS" data-es="CADA MILLA CUENTA">EVERY MILE MATTERS</span><b>✳</b><span data-en="DELIVERING WITH HEART" data-es="ENTREGAMOS CON EL CORAZÓN">DELIVERING WITH HEART</span></div>
+</div>
+<dialog id="month-dialog"><div class="dialog-heading"><div><p class="eyebrow" data-en="THE NOVEMBER SQUAD" data-es="EL EQUIPO DE NOVIEMBRE">THE NOVEMBER SQUAD</p><h2 data-en="A month worth celebrating." data-es="Un mes para celebrar.">A month worth celebrating.</h2></div><button class="close-dialog" id="close-month" aria-label="Close">×</button></div><div id="all-birthdays" class="all-birthdays"></div><p class="dialog-footnote" data-en="Just names. Just birthdays. A whole lot of appreciation." data-es="Solo nombres y cumpleaños. Y mucho agradecimiento.">Just names. Just birthdays. A whole lot of appreciation.</p></dialog>
+<dialog id="unlock-dialog"><form id="unlock-form"><span class="unlock-mark"><svg><use href="#i-lock"/></svg></span><p class="eyebrow">PACKAGE SQUAD TV</p><h2 data-en="A space for our squad." data-es="Un espacio para nuestro equipo.">A space for our squad.</h2><p data-en="Enter your screen code to start celebrating." data-es="Ingresa el código de pantalla para comenzar.">Enter your screen code to start celebrating.</p><label for="screen-code" data-en="Screen code" data-es="Código de pantalla">Screen code</label><input type="password" id="screen-code" name="code" minlength="8" maxlength="200" autocomplete="current-password" required><button type="submit" id="unlock-button" data-en="Let's celebrate →" data-es="A celebrar →">Let's celebrate →</button><p id="unlock-error" role="alert"></p></form></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+</body></html>

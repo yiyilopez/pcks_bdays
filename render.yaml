@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: package-squad-tv
+    runtime: node
+    plan: starter
+    region: virginia
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    disk:
+      name: birthday-cache
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: SCREEN_CODE
+        generateValue: true
+      - key: APPS_SCRIPT_URL
+        value: ""
+      - key: APPS_SCRIPT_TOKEN
+        generateValue: true
+      - key: DATA_FILE
+        value: /var/data/november.json
