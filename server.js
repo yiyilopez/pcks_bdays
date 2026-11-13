@@ -149,6 +149,9 @@ const server = http.createServer(async (req, res) => {
     await servePhoto(decodeURIComponent(url.pathname.slice(7)), res);
   } else if (url.pathname === '/healthz') {
     res.writeHead(200).end('ok');
+  } else if (url.pathname === '/assets/package-squad-logo.png') {
+    res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'public, max-age=3600' });
+    res.end(fs.readFileSync(path.join(__dirname, 'public', 'assets', 'package-squad-logo.png')));
   } else if (url.pathname === '/' || url.pathname === '/index.html') {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
     res.end(indexHtml());
