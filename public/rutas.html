@@ -93,11 +93,11 @@
 
 <div id="upload">
   <div id="drop">
-    <h2>Rutas de hoy <span>/ Today's routes</span></h2>
+    <h2>Today's routes <span>/ Rutas de hoy</span></h2>
     <div class="rule"></div>
-    <p>Arrastra aquí el Excel de Itineraries.<br>Drop the Itineraries Excel file here.</p>
-    <label>Elegir archivo / Choose file<input id="file" type="file" accept=".xlsx,.xls" hidden></label>
-    <p style="margin-top:calc(var(--u)*1.6);font-size:calc(var(--u)*1.1)">El archivo se procesa en este navegador y no se sube a ningún servidor.</p>
+    <p>Drop the Itineraries Excel file here.<br>Arrastra aquí el Excel de Itineraries.</p>
+    <label>Choose file / Elegir archivo<input id="file" type="file" accept=".xlsx,.xls" hidden></label>
+    <p style="margin-top:calc(var(--u)*1.6);font-size:calc(var(--u)*1.1)">The file is processed in this browser and never uploaded.<br>El archivo se procesa en este navegador y no se sube a ningún servidor.</p>
     <div id="err"></div>
   </div>
 </div>
@@ -114,7 +114,7 @@
   <footer><span id="fEn"></span><span id="fMid"></span><span id="fEs"></span></footer>
 </div>
 <div class="bar hidden" id="bar"></div>
-<div class="hint" id="hint">← → navegar · espacio pausa · U nuevo archivo</div>
+<div class="hint" id="hint">← → navigate · space pause · U new file</div>
 
 <script>
 const TZ = 'America/New_York';
@@ -135,12 +135,12 @@ function parse(buf) {
   const wb = XLSX.read(buf, { type: 'array' });
   const sn = wb.SheetNames.find(n => norm(n).includes('itinerar')) || wb.SheetNames[0];
   const data = XLSX.utils.sheet_to_json(wb.Sheets[sn], { defval: '' });
-  if (!data.length) throw new Error('La hoja está vacía. / The sheet is empty.');
+  if (!data.length) throw new Error('The sheet is empty. / La hoja está vacía.');
   const keys = Object.keys(data[0]);
   const find = (...c) => keys.find(k => c.some(x => norm(k) === norm(x)));
   const K = { name: find('Driver name'), route: find('Route code'), stops: find('All stops'), pk: find('total packages'), ret: find('Projected Return to Station'), veh: find('Delivery Service Type') };
   const miss = Object.entries({ 'Driver name': K.name, 'Route code': K.route, 'All stops': K.stops, 'total packages': K.pk, 'Projected Return to Station': K.ret }).filter(x => !x[1]).map(x => x[0]);
-  if (miss.length) throw new Error('No encontré estas columnas / Missing columns: ' + miss.join(', '));
+  if (miss.length) throw new Error('Missing columns / No encontré estas columnas: ' + miss.join(', '));
   return data
     .filter(r => String(r[K.name]).trim() && String(r[K.name]).toLowerCase() !== 'missing')
     .map(r => ({ name: cleanName(r[K.name]), route: String(r[K.route]), stops: r[K.stops], pk: r[K.pk], ret: String(r[K.ret]), veh: K.veh ? cleanVeh(r[K.veh]) : '' }))
@@ -149,27 +149,27 @@ function parse(buf) {
 
 function personSlide(r) {
   return `<section class="slide person">
-    <div class="tile"><small>Ruta / Route</small><b>${esc(r.route)}</b></div>
+    <div class="tile"><small>Route / Ruta</small><b>${esc(r.route)}</b></div>
     <div class="info">
-      <div class="label">Tu ruta de hoy &nbsp;/&nbsp; Your route today</div>
+      <div class="label">Your route today &nbsp;/&nbsp; Tu ruta de hoy</div>
       <div class="name${r.name.length > 20 ? ' long' : ''}">${esc(r.name)}</div>
       <div class="rule"></div>
       ${r.veh ? `<div class="veh">${esc(r.veh)}</div>` : ''}
       <div class="load">
-        <div><b>${esc(r.stops)}</b><span>Paradas / Stops</span></div>
-        <div><b>${esc(r.pk)}</b><span>Paquetes / Packages</span></div>
+        <div><b>${esc(r.stops)}</b><span>Stops / Paradas</span></div>
+        <div><b>${esc(r.pk)}</b><span>Packages / Paquetes</span></div>
       </div>
-      <div class="ret"><span>Regreso proyectado a la estación &nbsp;/&nbsp; Projected return</span><b>${esc(r.ret)}</b></div>
+      <div class="ret"><span>Projected return &nbsp;/&nbsp; Regreso proyectado a la estación</span><b>${esc(r.ret)}</b></div>
     </div></section>`;
 }
 function groupSlide(list, n, total) {
   return `<section class="slide group">
-    <h2>Rutas de hoy <span>/ Today's routes${total > 1 ? ` · ${n}/${total}` : ''}</span></h2><div class="cap">Regreso · paradas / paquetes &nbsp;|&nbsp; Return · stops / packages</div>
+    <h2>Today's routes <span>/ Rutas de hoy${total > 1 ? ` · ${n}/${total}` : ''}</span></h2><div class="cap">Return · stops / packages &nbsp;|&nbsp; Regreso · paradas / paquetes</div>
     <div class="list">${list.map(r => `<div class="row"><div class="ph">${esc(r.route.replace(/^[A-Za-z]+/, '') || r.route)}</div><div><div class="n">${esc(r.name)}</div><div class="d">${esc(r.ret)} <i>· ${esc(r.stops)} / ${esc(r.pk)}</i></div></div></div>`).join('')}</div>
   </section>`;
 }
 function messageSlide() {
-  return `<section class="slide message"><div><h2>Gracias por cada milla y cada entrega.<br>Thank you for every mile and every delivery.</h2><div class="rule"></div><p>Conduce seguro · Drive safe</p></div></section>`;
+  return `<section class="slide message"><div><h2>Thank you for every mile and every delivery.<br>Gracias por cada milla y cada entrega.</h2><div class="rule"></div><p>Drive safe · Conduce seguro</p></div></section>`;
 }
 
 function build(rows) {
@@ -204,7 +204,7 @@ async function load(file) {
   $('err').textContent = '';
   try {
     const rows = parse(await file.arrayBuffer());
-    if (!rows.length) throw new Error('No encontré conductores. / No drivers found.');
+    if (!rows.length) throw new Error('No drivers found. / No encontré conductores.');
     build(rows); dateLabels();
     $('upload').classList.add('hidden'); $('frame').classList.remove('hidden'); $('bar').classList.remove('hidden');
     document.body.classList.add('playing');
@@ -226,7 +226,7 @@ document.addEventListener('keydown', e => {
   else if (e.key.toLowerCase() === 'u') { clearTimeout(timer); $('bar').classList.add('hidden'); $('frame').classList.add('hidden'); $('upload').classList.remove('hidden'); document.body.classList.remove('playing'); }
 });
 </script>
-<a class="nav-btn" id="navBtn" href="/">← Cumpleaños / Birthdays</a>
+<a class="nav-btn" id="navBtn" href="/">← Birthdays / Cumpleaños</a>
 <script>
 (() => {
   const btn = document.getElementById('navBtn');
