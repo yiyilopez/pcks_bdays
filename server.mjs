@@ -14,7 +14,7 @@ const secret = screenCode ? createHmac('sha256', screenCode).update('package-squ
 let snapshot = null, inFlight = null, lastDailyKey = null, bridgeFailed = false;
 const attempts = new Map();
 try { snapshot = sanitizePayload(JSON.parse(await readFile(dataFile, 'utf8'))); } catch { /* Empty until first authorized sync. */ }
-// Optional one-time seed lives in Render secrets, never in public assets or Git.
+// Optional one-time seed lives in hosting secrets, never in public assets or Git.
 if (!snapshot && process.env.INITIAL_BIRTHDAYS_JSON) {
   snapshot = sanitizePayload(JSON.parse(process.env.INITIAL_BIRTHDAYS_JSON));
   await mkdir(dirname(dataFile), { recursive: true });
@@ -114,7 +114,7 @@ const server = http.createServer(async (req, res) => {
 
 await new Promise(resolveListen => server.listen(Number(process.env.PORT || 3000), production ? '0.0.0.0' : '127.0.0.1', resolveListen));
 console.log(`Package Squad TV · http://localhost:${server.address().port}`);
-// Always-on Render instance: local 05:00 follows both EST and EDT, independent of TV.
+// Always-on instance: local 05:00 follows both EST and EDT, independent of TV.
 async function dailyRefresh() {
   const key = dailyKey();
   if (key && key !== lastDailyKey && await refresh()) lastDailyKey = key;

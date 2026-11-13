@@ -18,7 +18,7 @@ Abre http://localhost:3000. El desarrollo escucha solo en loopback. La copia loc
 - La hoja original permanece privada y no se modifica.
 - Solo se procesan bloques `nombre | día | separador` de la pestaña `November`, tal como está estructurada actualmente. No se presume que existan columnas de estado ni la pestaña `Actual Drivers`.
 - Google Apps Script valida un secreto en el cuerpo del POST antes de leer la hoja. Devuelve exclusivamente `name`, `day`, `month` por persona, además de fecha de actualización y mes de la fuente.
-- Render vuelve a validar y reconstruir esa proyección. No entrega correos, teléfonos, edad, año de nacimiento ni estados laborales al TV.
+- Railway vuelve a validar y reconstruir esa proyección. No entrega correos, teléfonos, edad, año de nacimiento ni estados laborales al TV.
 - En producción se requiere `SCREEN_CODE` de al menos 8 caracteres. Las rutas de datos están protegidas mediante cookie HttpOnly, Secure y SameSite=Strict. La sesión dura 30 días y sobrevive reinicios mientras no cambie el código.
 - No se incluyen analíticas, fuentes remotas ni recursos de terceros en la pantalla.
 - El código de pantalla y la URL/secreto del puente nunca se envían al JavaScript público. Quien tenga el código de pantalla puede ver nombres y cumpleaños: compártelo solo con el equipo.
@@ -29,20 +29,30 @@ Abre http://localhost:3000. El desarrollo escucha solo en loopback. La copia loc
 2. Copia `apps-script/Code.gs` al editor. Activa la visualización de `appsscript.json` en la configuración y reemplázalo por el archivo incluido. El alcance solicitado es lectura de hojas de cálculo.
 3. En **Configuración del proyecto → Propiedades del script**, agrega:
    - `SPREADSHEET_ID`: ID del documento de cumpleaños.
-   - `BRIDGE_TOKEN`: un secreto aleatorio de al menos 32 caracteres. Debe ser el mismo valor de `APPS_SCRIPT_TOKEN` en Render.
+   - `BRIDGE_TOKEN`: un secreto aleatorio de al menos 32 caracteres. Debe ser el mismo valor de `APPS_SCRIPT_TOKEN` en Railway.
 4. **Implementar → Nueva implementación → Aplicación web**. Ejecutar como la cuenta propietaria; permitir solicitudes sin sesión de Google para que el servidor pueda llamar al puente. La hoja sigue privada: el código exige el secreto antes de leer o devolver datos. Si la política de Workspace impide este tipo de implementación, se necesita una integración autenticada aprobada por el administrador.
 5. Autoriza los permisos de Google y copia la URL terminada en `/exec`.
-6. Configura `APPS_SCRIPT_URL` y `APPS_SCRIPT_TOKEN` en Render. Guarda y despliega el cambio de entorno. El servidor hará una primera sincronización al arrancar.
+6. Configura `APPS_SCRIPT_URL` y `APPS_SCRIPT_TOKEN` en Railway. Guarda y despliega el cambio de entorno. El servidor hará una primera sincronización al arrancar.
 
 No uses la URL `/dev`. Un GET al puente no devuelve cumpleaños. No pongas el secreto en parámetros de URL, código del cliente o Git. Para actualizar el código del puente, publica una nueva versión de su implementación existente.
 
-## Render
+## Railway
 
-El `render.yaml` define un servicio Node siempre encendido en Virginia y un disco privado de 1 GB para conservar el último snapshot válido. Se generan automáticamente el código de pantalla y el secreto del puente; puedes consultarlos en **Environment** del servicio. La URL de Apps Script queda pendiente hasta autorizar e implementar el proyecto de Google.
+Destino de despliegue: Railway. Conecta el repositorio `yiyilopez/pcks_bdays`, rama `main`, como un servicio nuevo. El Dockerfile usa Node 22 sin dependencias externas; `railway.json` define el arranque, healthcheck y una sola instancia siempre encendida (`sleepApplication: false`). No se cambia el plan de la cuenta.
 
-La primera publicación puede recibir `INITIAL_BIRTHDAYS_JSON` como variable privada de Render con la proyección validada de noviembre. No se incluye en Git ni en activos públicos. Esa copia aparece etiquetada como **saved snapshot / copia guardada** hasta que se conecte el puente. Con disco persistente se usa solo si aún no existe un snapshot.
+Configura estas variables privadas en el servicio:
 
-El plan de infraestructura se debe revisar antes de aplicarlo. La instancia siempre encendida y el disco generan cargos; consultar los precios vigentes en https://render.com/pricing.
+- `SCREEN_CODE`: código fuerte de acceso, al menos 8 caracteres.
+- `DATA_FILE`: `/data/november.json` si adjuntas un volumen en `/data`; sin volumen puede ser `/app/data/november.json`.
+- `INITIAL_BIRTHDAYS_JSON`: opcional, copia validada de noviembre para la primera publicación. Nunca se guarda en Git ni en la imagen Docker.
+- `APPS_SCRIPT_URL`: URL `/exec` al implementar el puente de Google.
+- `APPS_SCRIPT_TOKEN`: secreto de al menos 32 caracteres, igual a `BRIDGE_TOKEN` en Apps Script.
+
+Adjunta un volumen en `/data` para conservar el último snapshot válido entre publicaciones y genera un dominio HTTPS para el servicio. El uso de CPU, memoria y volumen se factura según el plan existente de Railway; no es necesariamente gratuito por tener una suscripción.
+
+La copia inicial aparece etiquetada como **saved snapshot / copia guardada** hasta que se conecte el puente. Se usa solo cuando no existe otro snapshot. Conserva los secretos fuera del repositorio.
+
+La configuración anterior de Render se conserva como alternativa, pero no se ha desplegado ningún servicio allí.
 
 ## Actualización automática
 

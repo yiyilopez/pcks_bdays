@@ -78,8 +78,9 @@ function renderData() {
   $('hero-description').textContent = !inNovember ? text('Our November edition returns next November. Until then, thank you for every mile.', 'La edición de noviembre regresa el próximo noviembre. Mientras tanto, gracias por cada milla.') : today.length ? text('A whole squad cheering you on. Today and every day.', 'Todo un equipo celebrándote. Hoy y cada día.') : future.length ? text('No birthdays today. Plenty of good people to celebrate.', 'Hoy no hay cumpleaños. Pero siempre hay un gran equipo para celebrar.') : text('All November birthdays celebrated. The appreciation keeps going.', 'Ya celebramos todos los cumpleaños del mes. El agradecimiento continúa.');
   $('panel-caption').textContent = inNovember ? text(`${birthdays.length} birthdays. One incredible squad.`, `${birthdays.length} cumpleaños. Un equipo increíble.`) : text('November birthdays will appear here in November.', 'Los cumpleaños aparecerán aquí en noviembre.');
   const visible = future.length ? future : birthdays;
-  const totalPages = Math.max(1, Math.ceil(visible.length / 4));
-  const pageItems = visible.slice((listPage % totalPages) * 4, (listPage % totalPages) * 4 + 4);
+  const perPage = window.innerWidth >= 1100 && window.innerHeight < 850 ? 3 : 4;
+  const totalPages = Math.max(1, Math.ceil(visible.length / perPage));
+  const pageItems = visible.slice((listPage % totalPages) * perPage, (listPage % totalPages) * perPage + perPage);
   $('birthday-list').replaceChildren(...pageItems.map(b => birthdayRow(b)));
   if (!pageItems.length) {
     const empty = document.createElement('div'); empty.className = 'empty-list';
@@ -141,4 +142,5 @@ setInterval(renderClock, 1000);
 setInterval(() => { if (!document.hidden) void load(); }, 60000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { renderClock(); void load(); } });
 window.addEventListener('online', () => load());
+window.addEventListener('resize', () => { if (data) renderData(); });
 applyLanguage(); void load();
