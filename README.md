@@ -5,6 +5,10 @@ Pantalla sobria de cumpleaños del mes para proyectar en la estación. Lee el Go
 foto, luego la lista completa y un mensaje para los conductores. Textos en inglés y español.
 Sin dependencias: solo Node.
 
+La pantalla también incluye a Kenneth Nachbar (4 de noviembre), confirmado en
+el reporte de cumpleaños, con la foto proporcionada. Esta incorporación se conserva
+al actualizar la hoja y no se duplica si se añade allí con el mismo nombre y fecha.
+
 ## Cómo subirla (repo `yiyilopez/pcks_bdays` + Railway)
 
 1. En GitHub abre el repo → "Add file" → "Upload files", arrastra **el contenido** de esta carpeta
