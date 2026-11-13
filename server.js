@@ -5,7 +5,6 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { parseTabs, parseSheet } = require('./lib/parse');
-const { withAdditionalBirthdays } = require('./lib/additional-birthdays');
 
 const PORT = process.env.PORT || 3000;
 const SHEET_ID = process.env.SHEET_ID || '1U2SlWVjfXOuPzNR8GxVV_Y8cUGf13Gio3lvJDJbP_B4';
@@ -64,7 +63,7 @@ async function refresh() {
     const tab = tabs.find((t) => monthIndexOf(t.name) === now.month - 1);
     if (!tab) {
       state = {
-        people: withAdditionalBirthdays([], now.month),
+        people: [],
         month: now.month,
         tab: null,
         updatedAt: new Date().toISOString(),
@@ -88,7 +87,7 @@ async function refresh() {
       }
     }
     state = {
-      people: withAdditionalBirthdays(people.map((p) => ({ name: p.name, day: p.day, photo: p.photo ? `/photo/${p.photo.id}` : null })), now.month),
+      people: people.map((p) => ({ name: p.name, day: p.day, photo: p.photo ? `/photo/${p.photo.id}` : null })),
       month: now.month,
       tab: tab.name,
       updatedAt: new Date().toISOString(),
@@ -153,9 +152,6 @@ const server = http.createServer(async (req, res) => {
   } else if (url.pathname === '/assets/package-squad-logo.png') {
     res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'public, max-age=3600' });
     res.end(fs.readFileSync(path.join(__dirname, 'public', 'assets', 'package-squad-logo.png')));
-  } else if (url.pathname === '/assets/kenneth-nachbar.png') {
-    res.writeHead(200, { 'content-type': 'image/png', 'cache-control': 'public, max-age=3600' });
-    res.end(fs.readFileSync(path.join(__dirname, 'public', 'assets', 'kenneth-nachbar.png')));
   } else if (url.pathname === '/' || url.pathname === '/index.html') {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
     res.end(indexHtml());
