@@ -94,11 +94,18 @@ async function refresh() {
       error: null,
     };
     console.log(`[refresh] ${tab.name}: ${people.length} personas, ${ids.size} fotos`);
+    warmPhotos().catch((err) => console.error('[warm]', err.message));
   } catch (err) {
     console.error('[refresh] error:', err.message);
     // Se conservan los ultimos datos buenos; solo se anota el error.
     state = { ...state, error: err.message };
   }
+}
+
+// Descarga todas las fotos al refrescar, para que ya esten listas cuando la TV las pida.
+async function warmPhotos() {
+  const sink = { writeHead: () => sink, end: () => {} };
+  await Promise.all([...photoSrc.keys()].map((id) => servePhoto(id, sink)));
 }
 
 async function servePhoto(id, res) {
@@ -117,8 +124,10 @@ async function servePhoto(id, res) {
         buf = fs.readFileSync(path.join(FIXTURE_DIR, path.basename(src)));
         type = 'image/svg+xml';
       } else {
-        const sized = /=s\d+$/.test(src) ? src.replace(/=s\d+$/, '=s900') : src;
-        const r = await fetch(sized);
+        // JPEG de 700px de ancho: ~50 KB en vez de ~1 MB en PNG, mucho mas rapido.
+        const base = src.replace(/=[a-z0-9-]+$/i, '');
+        let r = await fetch(`${base}=w700-rj`);
+        if (!r.ok) r = await fetch(src);
         if (!r.ok) throw new Error('foto ' + r.status);
         buf = Buffer.from(await r.arrayBuffer());
         type = r.headers.get('content-type') || 'image/png';
