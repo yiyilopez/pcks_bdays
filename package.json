@@ -1,8 +1,9 @@
 {
-  "name": "package-squad-tv",
+  "name": "birthday-board",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
-  "scripts": { "start": "node --env-file-if-exists=.env server.mjs", "dev": "node --watch --env-file-if-exists=.env server.mjs", "test": "node --test" },
-  "engines": { "node": ">=22" }
+  "description": "Pantalla de cumpleanos del mes para proyectar en la estacion",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
 }

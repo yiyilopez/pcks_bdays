@@ -1,61 +1,200 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#152332"><meta name="description" content="A little celebration for the people who deliver a lot. Package Squad driver appreciation.">
-  <title>Package Squad · The People Behind the Miles</title>
-  <link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><script type="module" src="/app.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birthdays</title>
+<style>
+  :root {
+    --bg: #101317;
+    --ink: #f3f1ec;
+    --soft: #9aa0a8;
+    --line: #2a2f36;
+    --accent: #c8a562;
+    --u: min(1vw, 1.78vh); /* unidad que mantiene proporcion 16:9 */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--ink); cursor: none;
+    font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif; }
+
+  .frame { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto; padding: calc(var(--u) * 3) calc(var(--u) * 4.5); }
+
+  header, footer { display: flex; justify-content: space-between; align-items: baseline;
+    font-size: calc(var(--u) * 1.35); letter-spacing: .16em; text-transform: uppercase; color: var(--soft); }
+  header { padding-bottom: calc(var(--u) * 1.6); border-bottom: 1px solid var(--line); }
+  footer { padding-top: calc(var(--u) * 1.6); border-top: 1px solid var(--line); }
+  header b { color: var(--ink); font-weight: 600; }
+
+  main { position: relative; }
+  .slide { position: absolute; inset: 0; display: grid; align-items: center; opacity: 0; transition: opacity 1.2s ease; }
+  .slide.on { opacity: 1; }
+
+  /* Persona */
+  .person { grid-template-columns: auto 1fr; gap: calc(var(--u) * 6); justify-content: center; padding: 0 calc(var(--u) * 4); }
+  .photo { width: calc(var(--u) * 25); height: calc(var(--u) * 31); border-radius: calc(var(--u) * .5); overflow: hidden; background: #1b2027;
+    display: grid; place-items: center; font-size: calc(var(--u) * 7); font-weight: 300; color: var(--soft); }
+  .photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; display: block; }
+  .info { max-width: calc(var(--u) * 50); }
+  .label { font-size: calc(var(--u) * 1.45); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .name { font-size: calc(var(--u) * 5.4); font-weight: 600; line-height: 1.06; letter-spacing: -.015em; margin: calc(var(--u) * 1.4) 0 calc(var(--u) * 1.8); text-wrap: balance; }
+  .name.long { font-size: calc(var(--u) * 4.3); }
+  .rule { width: calc(var(--u) * 5); height: 2px; background: var(--accent); margin-bottom: calc(var(--u) * 1.8); }
+  .date { font-size: calc(var(--u) * 2.3); font-weight: 400; }
+  .date span, .when span { color: var(--soft); }
+  .when { font-size: calc(var(--u) * 1.6); margin-top: calc(var(--u) * .8); color: var(--soft); }
+  .when.today { color: var(--accent); font-weight: 600; }
+  .when.today span { color: var(--accent); }
+  .wish { margin-top: calc(var(--u) * 3); font-size: calc(var(--u) * 1.7); line-height: 1.45; font-weight: 300; }
+  .wish span { display: block; color: var(--soft); }
+
+  /* Todos */
+  .group { align-items: stretch; }
+  .group h2 { font-size: calc(var(--u) * 2.6); font-weight: 600; letter-spacing: -.01em; }
+  .group h2 span { color: var(--soft); font-weight: 300; }
+  .list { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 1.5) calc(var(--u) * 3); align-content: center; height: 100%; }
+  .list.many { grid-template-columns: repeat(4, 1fr); }
+  .row { display: flex; align-items: center; gap: calc(var(--u) * 1.4); min-width: 0; }
+  .row .ph { flex: none; width: calc(var(--u) * 6.4); height: calc(var(--u) * 6.4); border-radius: calc(var(--u) * .4); overflow: hidden; background: #1b2027;
+    display: grid; place-items: center; font-size: calc(var(--u) * 1.8); color: var(--soft); }
+  .row .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
+  .row .n { font-size: calc(var(--u) * 1.6); font-weight: 500; line-height: 1.2; }
+  .row .d { font-size: calc(var(--u) * 1.3); color: var(--accent); margin-top: calc(var(--u) * .3); }
+  .list.many .row .ph { width: calc(var(--u) * 4.8); height: calc(var(--u) * 4.8); }
+  .list.many .row .n { font-size: calc(var(--u) * 1.35); }
+
+  /* Mensaje */
+  .message { place-items: center; text-align: center; }
+  .message h2 { font-size: calc(var(--u) * 3.8); font-weight: 600; letter-spacing: -.015em; max-width: calc(var(--u) * 62); line-height: 1.15; text-wrap: balance; }
+  .message .rule { margin: calc(var(--u) * 2.2) auto; }
+  .message p { font-size: calc(var(--u) * 2.3); color: var(--soft); font-weight: 300; max-width: calc(var(--u) * 62); text-wrap: balance; }
+
+  .bar { position: fixed; left: 0; bottom: 0; height: 2px; background: var(--accent); width: 0; }
+</style>
 </head>
 <body>
-<svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
- <symbol id="i-box" viewBox="0 0 32 32"><path d="m5 10 11-6 11 6v13l-11 6-11-6zM5 10l11 6 11-6M16 16v13M10.5 7l11 6"/></symbol>
- <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
- <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 10a8 8 0 1 0-2 8M20 4v6h-6"/></symbol>
- <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
- <symbol id="i-shield" viewBox="0 0 32 32"><path d="m16 3 11 4v9c0 7-11 13-11 13S5 23 5 16V7zM10 15l4 4 8-8"/></symbol>
- <symbol id="i-heart" viewBox="0 0 32 32"><path d="M16 27 5 16C-3 7 10-3 16 8c6-11 19-1 11 8z"/></symbol>
- <symbol id="i-cake" viewBox="0 0 32 32"><path d="M5 17h22v12H5zM5 22c4 4 7-4 11 0s7-4 11 0M10 17v-5m6 5v-5m6 5v-5M10 8v-3m6 3V3m6 5V5"/></symbol>
- <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol>
-</svg>
-<div class="app-shell">
- <header class="topbar">
-  <a class="brand" href="/" aria-label="Package Squad home"><span class="brand-mark"><svg><use href="#i-box"/></svg></span><span>PACKAGE<br><strong>SQUAD<span class="brand-dot">®</span></strong></span></a>
-  <div class="header-divider"></div><span class="header-label" data-en="THE PEOPLE BEHIND THE MILES" data-es="LAS PERSONAS DETRÁS DE CADA MILLA">THE PEOPLE BEHIND THE MILES</span>
-  <div class="header-tools"><span class="screen-label"><i></i><span data-en="SQUAD TV" data-es="SQUAD TV">SQUAD TV</span></span><button id="language" class="language" aria-label="Cambiar idioma">ES</button><button id="refresh" class="icon-button" aria-label="Refresh birthdays"><svg><use href="#i-refresh"/></svg></button><button id="fullscreen" class="icon-button" aria-label="Enter fullscreen"><svg><use href="#i-expand"/></svg></button></div>
- </header>
- <main>
-  <section class="page-intro">
-   <div><p class="eyebrow"><span class="small-line"></span><span data-en="GOOD PEOPLE. GREAT DELIVERIES." data-es="GRANDES PERSONAS. GRANDES ENTREGAS.">GOOD PEOPLE. GREAT DELIVERIES.</span></p><h1 data-en="You deliver. We celebrate." data-es="Tú entregas. Nosotros celebramos.">You deliver. We celebrate.</h1><p class="intro-copy" data-en="A little spotlight for the squad that goes the extra mile." data-es="Un reconocimiento al equipo que siempre da una milla más.">A little spotlight for the squad that goes the extra mile.</p></div>
-   <div class="clock-block"><div class="clock" id="clock">--:--<span>--</span></div><p id="current-date">NEW JERSEY · EASTERN TIME</p></div>
-  </section>
-  <div class="dashboard-grid">
-   <section class="celebration-card" aria-labelledby="hero-title">
-    <div class="hero-top"><span class="pill"><svg><use href="#i-cake"/></svg><span id="hero-label">A REASON TO CELEBRATE</span></span><span class="hero-edition">THE NOVEMBER EDITION</span></div>
-    <div class="hero-content"><p class="hero-kicker" id="hero-kicker">NEXT UP ON THE ROUTE</p><h2 id="hero-title">Every mile.<br>Every smile.<br><em>All you.</em></h2><div id="hero-person" class="hero-person" hidden><span class="person-line"></span><div><h3 id="hero-name"></h3><p id="hero-detail"></p></div></div><p id="hero-description" class="hero-description">Here's to the people who make it happen.</p></div>
-    <div class="date-sticker" id="date-sticker" hidden><span class="sticker-star">✳</span><span id="sticker-month">NOV</span><strong id="sticker-day">18</strong><small id="sticker-caption">SAVE THE DATE</small></div>
-    <svg class="route-art" viewBox="0 0 760 270" fill="none" aria-hidden="true">
-     <path class="route-path" d="M-40 205H245c70 0 25-105 102-105h100c71 0 17 104 90 104h240" stroke="#f8c94b" stroke-opacity=".25" stroke-width="2" stroke-dasharray="7 9"/>
-     <circle cx="243" cy="205" r="5" fill="#f8c94b"/><circle cx="536" cy="204" r="5" fill="#f8c94b"/>
-     <g transform="translate(408 65) rotate(-5)"><path d="M24 38h128v84H24z" fill="#e9bd52"/><path d="m24 38 64-25 64 25-65 27z" fill="#ffdb76"/><path d="m87 65 65-27v84l-65 25z" fill="#d39e30"/><path d="m65 22 64 26v30l-18 7V55L47 29z" fill="#f6e2ac"/><path d="M40 99h24m-24 8h16" stroke="#152332" stroke-width="3"/></g>
-     <g transform="translate(554 132)"><path d="M0 0h84v62H0z" fill="#ebe7dd"/><path d="M84 22h34l23 25v15H84z" fill="#f8c94b"/><path d="M91 29h22l16 18H91z" fill="#283e50"/><path d="M0 63h145" stroke="#f8c94b" stroke-width="5"/><circle cx="27" cy="65" r="12" fill="#0c1723"/><circle cx="27" cy="65" r="5" fill="#c5c9ca"/><circle cx="115" cy="65" r="12" fill="#0c1723"/><circle cx="115" cy="65" r="5" fill="#c5c9ca"/><path d="m27 17 12-6 12 6v15l-12 6-12-6zM27 17l12 6 12-6m-12 6v15" stroke="#263b4c" stroke-width="2"/><path d="M7 48h24" stroke="#a9b5ba" stroke-width="3"/></g>
-     <path d="m571 42 3 9 9 3-9 3-3 9-3-9-9-3 9-3zM361 137l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#f8c94b"/><path d="m695 87 8-12m-346-39 9 5m100 8-3-10m215 101 8 2" stroke="#f8c94b" stroke-width="3"/>
-    </svg>
-    <div class="hero-bottom"><span data-en="SPECIAL DELIVERY: GOOD VIBES ONLY" data-es="ENTREGA ESPECIAL: BUENA ENERGÍA">SPECIAL DELIVERY: GOOD VIBES ONLY</span><span>PS / 11</span></div>
-   </section>
-   <section class="birthday-panel" aria-labelledby="birthday-title">
-    <div class="section-heading"><p class="eyebrow" data-en="BIRTHDAY ROUTE" data-es="RUTA DE CUMPLEAÑOS">BIRTHDAY ROUTE</p><span class="month-chip" data-en="NOVEMBER" data-es="NOVIEMBRE">NOVEMBER</span></div>
-    <h2 id="birthday-title" data-en="Next stops. More smiles." data-es="Próximas paradas. Más sonrisas.">Next stops. More smiles.</h2><p class="panel-caption" id="panel-caption">Celebrating our November squad.</p>
-    <div id="birthday-list" class="birthday-list" aria-live="polite"><div class="empty-list">Loading the birthday route…</div></div>
-    <button class="month-button" id="show-month"><span data-en="See the whole birthday route" data-es="Ver todos los cumpleaños">See the whole birthday route</span><svg><use href="#i-arrow"/></svg></button>
-   </section>
-   <section class="thanks-card"><div class="message-icon"><svg><use href="#i-heart"/></svg></div><div><p class="eyebrow" data-en="SQUAD APPRECIATION" data-es="GRACIAS, EQUIPO">SQUAD APPRECIATION</p><h2 id="thanks-title">More than packages.<br>You deliver possibilities.</h2><p id="thanks-copy">Your effort makes a difference. Every single day.</p></div><span class="decorative-asterisk" aria-hidden="true">✳</span></section>
-   <section class="safety-card"><div class="message-icon"><svg><use href="#i-shield"/></svg></div><div><p class="eyebrow" data-en="SAFE MILES. EVERY TIME." data-es="CADA MILLA, CON SEGURIDAD.">SAFE MILES. EVERY TIME.</p><h2 id="safety-title">The best delivery?<br>Getting home safely.</h2><p id="safety-copy">Buckle up. Stay focused. Look out for each other.</p><div class="slide-dots" id="slide-dots" aria-label="Rotating safety message"><button class="active" aria-label="Safety message 1"></button><button aria-label="Safety message 2"></button><button aria-label="Safety message 3"></button></div></div></section>
-  </div>
-  <footer class="status-bar"><span class="source-status"><i id="status-dot"></i><span id="source-status">Connecting…</span></span><span class="footer-note" data-en="ONE SQUAD. EVERY MILE. TOGETHER." data-es="UN EQUIPO. CADA MILLA. JUNTOS.">ONE SQUAD. EVERY MILE. TOGETHER.</span><span id="updated-status">—</span></footer>
- </main>
- <div class="ticker"><span data-en="DELIVERING WITH HEART" data-es="ENTREGAMOS CON EL CORAZÓN">DELIVERING WITH HEART</span><b>✳</b><span data-en="DRIVEN BY OUR PEOPLE" data-es="NUESTRA GENTE NOS IMPULSA">DRIVEN BY OUR PEOPLE</span><b>✳</b><span data-en="PACKAGE SQUAD PROUD" data-es="ORGULLO PACKAGE SQUAD">PACKAGE SQUAD PROUD</span><b>✳</b><span data-en="EVERY MILE MATTERS" data-es="CADA MILLA CUENTA">EVERY MILE MATTERS</span><b>✳</b><span data-en="DELIVERING WITH HEART" data-es="ENTREGAMOS CON EL CORAZÓN">DELIVERING WITH HEART</span></div>
+<div class="frame">
+  <header><div><b id="tEn"></b> &nbsp;/&nbsp; <span id="tEs"></span></div><div id="team"></div></header>
+  <main id="stage"></main>
+  <footer><div id="dateEn"></div><div id="count"></div><div id="dateEs"></div></footer>
 </div>
-<dialog id="month-dialog"><div class="dialog-heading"><div><p class="eyebrow" data-en="THE NOVEMBER SQUAD" data-es="EL EQUIPO DE NOVIEMBRE">THE NOVEMBER SQUAD</p><h2 data-en="A month worth celebrating." data-es="Un mes para celebrar.">A month worth celebrating.</h2></div><button class="close-dialog" id="close-month" aria-label="Close">×</button></div><div id="all-birthdays" class="all-birthdays"></div><p class="dialog-footnote" data-en="Just names. Just birthdays. A whole lot of appreciation." data-es="Solo nombres y cumpleaños. Y mucho agradecimiento.">Just names. Just birthdays. A whole lot of appreciation.</p></dialog>
-<dialog id="unlock-dialog"><form id="unlock-form"><span class="unlock-mark"><svg><use href="#i-lock"/></svg></span><p class="eyebrow">PACKAGE SQUAD TV</p><h2 data-en="A space for our squad." data-es="Un espacio para nuestro equipo.">A space for our squad.</h2><p data-en="Enter your screen code to start celebrating." data-es="Ingresa el código de pantalla para comenzar.">Enter your screen code to start celebrating.</p><label for="screen-code" data-en="Screen code" data-es="Código de pantalla">Screen code</label><input type="password" id="screen-code" name="code" minlength="8" maxlength="200" autocomplete="current-password" required><button type="submit" id="unlock-button" data-en="Let's celebrate →" data-es="A celebrar →">Let's celebrate →</button><p id="unlock-error" role="alert"></p></form></dialog>
-<div class="toast" id="toast" role="status" hidden></div>
-</body></html>
+<div class="bar" id="bar"></div>
+
+<script>
+const MONTHS_EN = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const WISHES = [
+  ['Thank you for every mile and every delivery.', 'Gracias por cada milla y cada entrega.'],
+  ['The whole team is glad you are part of it.', 'Todo el equipo se alegra de que seas parte de él.'],
+  ['Wishing you a safe road and a great year ahead.', 'Te deseamos buen camino y un gran año por delante.'],
+  ['This station is better with you on the team.', 'Esta estación es mejor contigo en el equipo.'],
+];
+const TEAM_NOTES = [
+  ['Thank you, drivers. This team runs because of you.', 'Gracias, conductores. Este equipo funciona gracias a ustedes.'],
+  ['Drive safe. Someone is waiting for you at home.', 'Maneja con cuidado. Alguien te espera en casa.'],
+];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const initials = (n) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+
+let data = null, signature = '', slides = [], idx = -1, timer = null, noteIdx = 0;
+
+function avatar(p) {
+  return p.photo
+    ? `<img src="${p.photo}" alt="" onerror="this.replaceWith(document.createTextNode('${esc(initials(p.name))}'))">`
+    : esc(initials(p.name));
+}
+
+function when(p, t) {
+  const diff = p.day - t.day;
+  if (diff === 0) return ['today', 'Today', 'Hoy'];
+  if (diff === 1) return ['', 'Tomorrow', 'Mañana'];
+  if (diff > 1) return ['', `In ${diff} days`, `En ${diff} días`];
+  return ['', 'Celebrated this month', 'Lo celebramos este mes'];
+}
+
+function build() {
+  const t = data.today, m = (data.month || t.month) - 1;
+  $('tEn').textContent = `${MONTHS_EN[m]} Birthdays`;
+  $('tEs').textContent = `Cumpleaños de ${MONTHS_ES[m]}`;
+  $('team').textContent = data.team || '';
+  const d = new Date(t.year, t.month - 1, t.day);
+  $('dateEn').textContent = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  $('dateEs').textContent = d.toLocaleDateString('es', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  const people = data.people, stage = $('stage');
+  stage.innerHTML = '';
+  slides = [];
+
+  people.forEach((p, i) => {
+    const [cls, en, es] = when(p, t);
+    const w = WISHES[i % WISHES.length];
+    const el = document.createElement('section');
+    el.className = 'slide person';
+    el.innerHTML = `
+      <div class="photo">${avatar(p)}</div>
+      <div class="info">
+        <div class="label">Happy Birthday &nbsp;/&nbsp; Feliz Cumpleaños</div>
+        <div class="name${p.name.length > 22 ? ' long' : ''}">${esc(p.name)}</div>
+        <div class="rule"></div>
+        <div class="date">${MONTHS_EN[m]} ${p.day} <span>&nbsp;/&nbsp; ${p.day} de ${MONTHS_ES[m]}</span></div>
+        <div class="when ${cls}">${en} <span>&nbsp;/&nbsp; ${es}</span></div>
+        <div class="wish">${esc(w[0])}<span>${esc(w[1])}</span></div>
+      </div>`;
+    stage.appendChild(el);
+    slides.push({ el, label: `${i + 1} / ${people.length}`, secs: data.rotateSeconds || 10 });
+  });
+
+  if (people.length > 1) {
+    const el = document.createElement('section');
+    el.className = 'slide group';
+    el.innerHTML = `
+      <div class="list${people.length > 12 ? ' many' : ''}">${people.map((p) => `
+        <div class="row"><div class="ph">${avatar(p)}</div><div><div class="n">${esc(p.name)}</div><div class="d">${MONTHS_EN[m].slice(0, 3)} ${p.day}</div></div></div>`).join('')}
+      </div>`;
+    stage.appendChild(el);
+    slides.push({ el, label: '', secs: Math.max(12, data.rotateSeconds || 10) });
+  }
+
+  const el = document.createElement('section');
+  el.className = 'slide message';
+  el.innerHTML = '<div><h2></h2><div class="rule"></div><p></p></div>';
+  stage.appendChild(el);
+  slides.push({ el, label: '', note: true, empty: people.length === 0, secs: data.rotateSeconds || 10 });
+
+  idx = -1;
+  next();
+}
+
+function next() {
+  clearTimeout(timer);
+  idx = (idx + 1) % slides.length;
+  const s = slides[idx];
+  if (s.note) {
+    const n = s.empty
+      ? ['No birthdays on the list this month.', 'No hay cumpleaños en la lista este mes.']
+      : TEAM_NOTES[noteIdx++ % TEAM_NOTES.length];
+    s.el.querySelector('h2').textContent = n[0];
+    s.el.querySelector('p').textContent = n[1];
+  }
+  slides.forEach((x) => x.el.classList.toggle('on', x === s));
+  $('count').textContent = s.label;
+  const bar = $('bar');
+  bar.style.transition = 'none'; bar.style.width = '0';
+  requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${s.secs}s linear`; bar.style.width = '100%'; }));
+  timer = setTimeout(next, s.secs * 1000);
+}
+
+async function load() {
+  try {
+    const d = await (await fetch('/api/birthdays', { cache: 'no-store' })).json();
+    const sig = JSON.stringify([d.people, d.month, d.today, d.team, d.rotateSeconds]);
+    if (sig !== signature) { signature = sig; data = d; build(); }
+  } catch (e) { /* se queda con lo que ya esta en pantalla */ }
+}
+load();
+setInterval(load, 5 * 60 * 1000);
+</script>
+</body>
+</html>
