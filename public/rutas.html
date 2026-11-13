@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#45437b">
+<title>Package Squad · Routes / Rutas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root { --bg:#f7f7fb; --ink:#171721; --soft:#686879; --line:#dbdbe7; --accent:#45437b; --u:min(1vw,1.78vh); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; overflow:hidden; background:var(--bg); color:var(--ink); font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,sans-serif; }
+  body.playing { cursor:none; }
+  body { background:radial-gradient(ellipse at 85% 35%, #e9e9f4 0%, transparent 60%), linear-gradient(135deg,#fff,var(--bg)); }
+  body::before { content:""; position:fixed; inset:0 0 auto; height:calc(var(--u)*.45); background:var(--accent); }
+  body::after { content:""; position:fixed; right:calc(var(--u)*-11); bottom:calc(var(--u)*-18); width:calc(var(--u)*48); height:calc(var(--u)*48); border:calc(var(--u)*4) solid #45437b05; transform:rotate(-35deg); pointer-events:none; }
+
+  .frame { position:fixed; inset:0; display:grid; grid-template-rows:auto 1fr auto; padding:calc(var(--u)*3) calc(var(--u)*4.5); }
+  header, footer { display:flex; justify-content:space-between; align-items:baseline; font-size:calc(var(--u)*1.35); letter-spacing:.16em; text-transform:uppercase; color:var(--soft); }
+  header { align-items:center; gap:calc(var(--u)*3); padding-bottom:calc(var(--u)*1.2); border-bottom:1px solid var(--line); }
+  footer { padding-top:calc(var(--u)*1.6); border-top:1px solid var(--line); }
+  .brand { display:flex; align-items:center; gap:calc(var(--u)*1.6); flex-shrink:0; }
+  .brand img { display:block; width:calc(var(--u)*8.5); height:calc(var(--u)*7.5); object-fit:contain; }
+  .brand-copy { display:grid; gap:calc(var(--u)*.65); }
+  .brand-copy b { font-size:calc(var(--u)*1.4); letter-spacing:.18em; color:var(--ink); font-weight:600; }
+  .brand-copy span { font-size:calc(var(--u)*.72); letter-spacing:.12em; color:var(--accent); }
+  .heading { display:grid; gap:calc(var(--u)*.65); text-align:right; }
+  .heading b { color:var(--accent); font-size:calc(var(--u)*1.4); font-weight:600; }
+  .heading span { font-size:calc(var(--u)*1.1); letter-spacing:.12em; }
+
+  main { position:relative; }
+  .slide { position:absolute; inset:0; display:grid; align-items:center; opacity:0; transition:opacity 1.2s; pointer-events:none; }
+  .slide.on { opacity:1; pointer-events:auto; }
+
+  /* Slide por persona */
+  .person { grid-template-columns:auto 1fr; gap:calc(var(--u)*6); justify-content:center; padding:0 calc(var(--u)*4); }
+  .tile { width:calc(var(--u)*25); height:calc(var(--u)*31); border-radius:calc(var(--u)*.7); background:#e4e4ef; display:grid; place-items:center; align-content:center; gap:calc(var(--u)*1.2); text-align:center; border:1px solid rgba(69,67,123,.09); box-shadow:0 calc(var(--u)*1.1) calc(var(--u)*3) #30305b13; }
+  .tile small { font-size:calc(var(--u)*1.45); letter-spacing:.2em; text-transform:uppercase; color:var(--soft); }
+  .tile b { font-size:calc(var(--u)*6.6); font-weight:300; color:var(--accent); letter-spacing:.02em; }
+  .info { max-width:calc(var(--u)*56); }
+  .label { font-size:calc(var(--u)*1.45); letter-spacing:.2em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+  .name { font-size:calc(var(--u)*5.4); font-weight:600; line-height:1.06; letter-spacing:-.015em; margin:calc(var(--u)*1.4) 0 calc(var(--u)*1.8); text-wrap:balance; }
+  .name.long { font-size:calc(var(--u)*4.3); }
+  .rule { width:calc(var(--u)*5); height:2px; background:var(--accent); margin-bottom:calc(var(--u)*1.8); }
+  .veh { font-size:calc(var(--u)*1.5); color:var(--soft); margin-bottom:calc(var(--u)*2.2); }
+  .load { display:flex; gap:calc(var(--u)*5); margin-bottom:calc(var(--u)*2.6); }
+  .load div { display:grid; gap:calc(var(--u)*.5); }
+  .load b { font-size:calc(var(--u)*4.2); font-weight:400; line-height:1; }
+  .load span { font-size:calc(var(--u)*1.15); letter-spacing:.16em; text-transform:uppercase; color:var(--soft); }
+  .ret { padding-left:calc(var(--u)*1.2); border-left:calc(var(--u)*.2) solid #9c9abd; }
+  .ret span { display:block; font-size:calc(var(--u)*1.15); letter-spacing:.16em; text-transform:uppercase; color:var(--soft); }
+  .ret b { display:block; margin-top:calc(var(--u)*.4); font-size:calc(var(--u)*4.6); font-weight:600; color:var(--accent); line-height:1.1; }
+
+  /* Slide resumen */
+  .group { align-items:stretch; grid-template-rows:auto auto 1fr; padding-top:calc(var(--u)*.8); }
+  .group .cap { font-size:calc(var(--u)*1.1); letter-spacing:.14em; text-transform:uppercase; color:var(--soft); margin-top:calc(var(--u)*.6); }
+  .group h2 { font-size:calc(var(--u)*2.6); font-weight:600; letter-spacing:-.01em; }
+  .group h2 span { color:var(--soft); font-weight:300; }
+  .list { display:grid; grid-template-columns:repeat(3,1fr); gap:calc(var(--u)*1.1) calc(var(--u)*3); align-content:center; margin-top:calc(var(--u)*1); }
+  .row { display:flex; align-items:center; gap:calc(var(--u)*1.4); min-width:0; }
+  .row .ph { flex:0 0 auto; width:calc(var(--u)*5.2); height:calc(var(--u)*5.2); border-radius:calc(var(--u)*.4); background:#e4e4ef; display:grid; place-items:center; font-size:calc(var(--u)*1.6); font-weight:500; color:var(--accent); }
+  .row .n { font-size:calc(var(--u)*1.45); font-weight:500; line-height:1.2; }
+  .row .d { font-size:calc(var(--u)*1.3); color:var(--accent); margin-top:calc(var(--u)*.3); font-weight:500; }
+  .row .d i { font-style:normal; color:var(--soft); font-weight:400; }
+
+  /* Slide mensaje */
+  .message { place-items:center; text-align:center; }
+  .message h2 { font-size:calc(var(--u)*3.8); font-weight:600; letter-spacing:-.015em; max-width:calc(var(--u)*62); line-height:1.15; text-wrap:balance; }
+  .message .rule { margin:calc(var(--u)*2.2) auto; }
+  .message p { font-size:calc(var(--u)*2.3); color:var(--soft); font-weight:300; max-width:calc(var(--u)*62); text-wrap:balance; }
+
+  .bar { position:fixed; left:0; bottom:0; height:2px; background:var(--accent); width:0; }
+
+  /* Pantalla de carga */
+  #upload { position:fixed; inset:0; display:grid; place-items:center; z-index:5; }
+  #drop { width:calc(var(--u)*62); max-width:92vw; border:2px dashed #9c9abd; border-radius:calc(var(--u)*1); padding:calc(var(--u)*5) calc(var(--u)*3); text-align:center; background:rgba(255,255,255,.75); }
+  #drop.over { border-color:var(--accent); background:#fff; }
+  #drop h2 { font-size:calc(var(--u)*2.6); font-weight:600; letter-spacing:-.01em; }
+  #drop h2 span { color:var(--soft); font-weight:300; }
+  #drop .rule { margin:calc(var(--u)*1.8) auto; }
+  #drop p { font-size:calc(var(--u)*1.5); color:var(--soft); line-height:1.5; }
+  #drop label { display:inline-block; margin-top:calc(var(--u)*2); padding:calc(var(--u)*1) calc(var(--u)*2.4); background:var(--accent); color:#fff; border-radius:calc(var(--u)*.5); font-size:calc(var(--u)*1.4); letter-spacing:.08em; cursor:pointer; }
+  #err { margin-top:calc(var(--u)*1.6); color:#a32a2a; font-size:calc(var(--u)*1.3); min-height:1.2em; }
+  .hint { position:fixed; right:calc(var(--u)*4.5); bottom:calc(var(--u)*5.6); font-size:calc(var(--u)*1.05); color:var(--soft); letter-spacing:.08em; opacity:0; transition:opacity .6s; }
+  .hint.show { opacity:1; }
+  .hidden { display:none !important; }
+  .nav-btn { position: fixed; top: calc(var(--u) * 1.4); left: 50%; transform: translateX(-50%); z-index: 10; padding: calc(var(--u) * .8) calc(var(--u) * 2); background: var(--accent); color: #fff; text-decoration: none; border-radius: 999px; font-size: calc(var(--u) * 1.2); letter-spacing: .08em; font-family: inherit; box-shadow: 0 calc(var(--u) * .5) calc(var(--u) * 1.5) #30305b33; opacity: 0; pointer-events: none; transition: opacity .4s; }
+  .nav-btn.show, .nav-btn:hover { opacity: 1; pointer-events: auto; }
+  body.mouse, body.mouse.playing { cursor: auto; }
+</style>
+</head>
+<body>
+
+<div id="upload">
+  <div id="drop">
+    <h2>Rutas de hoy <span>/ Today's routes</span></h2>
+    <div class="rule"></div>
+    <p>Arrastra aquí el Excel de Itineraries.<br>Drop the Itineraries Excel file here.</p>
+    <label>Elegir archivo / Choose file<input id="file" type="file" accept=".xlsx,.xls" hidden></label>
+    <p style="margin-top:calc(var(--u)*1.6);font-size:calc(var(--u)*1.1)">El archivo se procesa en este navegador y no se sube a ningún servidor.</p>
+    <div id="err"></div>
+  </div>
+</div>
+
+<div class="frame hidden" id="frame">
+  <header>
+    <div class="brand">
+      <img src="/assets/package-squad-logo.png" alt="Package Squad LLC" onerror="this.style.display='none'">
+      <div class="brand-copy"><b>PACKAGE SQUAD</b><span>ROUTES / RUTAS</span></div>
+    </div>
+    <div class="heading"><b id="hTitle">TODAY'S ROUTES</b><span id="hSub">RUTAS DE HOY</span></div>
+  </header>
+  <main id="stage"></main>
+  <footer><span id="fEn"></span><span id="fMid"></span><span id="fEs"></span></footer>
+</div>
+<div class="bar hidden" id="bar"></div>
+<div class="hint" id="hint">← → navegar · espacio pausa · U nuevo archivo</div>
+
+<script>
+const TZ = 'America/New_York';
+const ROTATE = Number(new URLSearchParams(location.search).get('s')) || 10;
+const PER_PAGE = 15;
+const $ = id => document.getElementById(id);
+const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let slides = [], cur = 0, timer = null, paused = false, started = 0;
+
+function cleanName(n) { return String(n || '').split(',').map(s => s.trim()).filter(Boolean).join(' '); }
+function cleanVeh(v) { return String(v || '').replace(/\s*\(\d+\s*mins?\)\s*$/i, '').trim(); }
+function timeVal(t) { const m = String(t || '').match(/(\d+):(\d+)\s*(am|pm)/i); if (!m) return 9999; let h = +m[1] % 12; if (m[3].toLowerCase() === 'pm') h += 12; return h * 60 + +m[2]; }
+function initials(n) { return n.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase(); }
+
+function parse(buf) {
+  const wb = XLSX.read(buf, { type: 'array' });
+  const sn = wb.SheetNames.find(n => norm(n).includes('itinerar')) || wb.SheetNames[0];
+  const data = XLSX.utils.sheet_to_json(wb.Sheets[sn], { defval: '' });
+  if (!data.length) throw new Error('La hoja está vacía. / The sheet is empty.');
+  const keys = Object.keys(data[0]);
+  const find = (...c) => keys.find(k => c.some(x => norm(k) === norm(x)));
+  const K = { name: find('Driver name'), route: find('Route code'), stops: find('All stops'), pk: find('total packages'), ret: find('Projected Return to Station'), veh: find('Delivery Service Type') };
+  const miss = Object.entries({ 'Driver name': K.name, 'Route code': K.route, 'All stops': K.stops, 'total packages': K.pk, 'Projected Return to Station': K.ret }).filter(x => !x[1]).map(x => x[0]);
+  if (miss.length) throw new Error('No encontré estas columnas / Missing columns: ' + miss.join(', '));
+  return data
+    .filter(r => String(r[K.name]).trim() && String(r[K.name]).toLowerCase() !== 'missing')
+    .map(r => ({ name: cleanName(r[K.name]), route: String(r[K.route]), stops: r[K.stops], pk: r[K.pk], ret: String(r[K.ret]), veh: K.veh ? cleanVeh(r[K.veh]) : '' }))
+    .sort((a, b) => a.route.localeCompare(b.route, undefined, { numeric: true }));
+}
+
+function personSlide(r) {
+  return `<section class="slide person">
+    <div class="tile"><small>Ruta / Route</small><b>${esc(r.route)}</b></div>
+    <div class="info">
+      <div class="label">Tu ruta de hoy &nbsp;/&nbsp; Your route today</div>
+      <div class="name${r.name.length > 20 ? ' long' : ''}">${esc(r.name)}</div>
+      <div class="rule"></div>
+      ${r.veh ? `<div class="veh">${esc(r.veh)}</div>` : ''}
+      <div class="load">
+        <div><b>${esc(r.stops)}</b><span>Paradas / Stops</span></div>
+        <div><b>${esc(r.pk)}</b><span>Paquetes / Packages</span></div>
+      </div>
+      <div class="ret"><span>Regreso proyectado a la estación &nbsp;/&nbsp; Projected return</span><b>${esc(r.ret)}</b></div>
+    </div></section>`;
+}
+function groupSlide(list, n, total) {
+  return `<section class="slide group">
+    <h2>Rutas de hoy <span>/ Today's routes${total > 1 ? ` · ${n}/${total}` : ''}</span></h2><div class="cap">Regreso · paradas / paquetes &nbsp;|&nbsp; Return · stops / packages</div>
+    <div class="list">${list.map(r => `<div class="row"><div class="ph">${esc(r.route.replace(/^[A-Za-z]+/, '') || r.route)}</div><div><div class="n">${esc(r.name)}</div><div class="d">${esc(r.ret)} <i>· ${esc(r.stops)} / ${esc(r.pk)}</i></div></div></div>`).join('')}</div>
+  </section>`;
+}
+function messageSlide() {
+  return `<section class="slide message"><div><h2>Gracias por cada milla y cada entrega.<br>Thank you for every mile and every delivery.</h2><div class="rule"></div><p>Conduce seguro · Drive safe</p></div></section>`;
+}
+
+function build(rows) {
+  const pages = Math.ceil(rows.length / PER_PAGE);
+  const html = rows.map(personSlide);
+  for (let p = 0; p < pages; p++) html.push(groupSlide(rows.slice(p * PER_PAGE, (p + 1) * PER_PAGE), p + 1, pages));
+  html.push(messageSlide());
+  $('stage').innerHTML = html.join('');
+  slides = [...document.querySelectorAll('#stage .slide')];
+}
+
+function dateLabels() {
+  const d = new Date();
+  $('fEn').textContent = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'long', month: 'long', day: 'numeric' }).format(d);
+  $('fEs').textContent = new Intl.DateTimeFormat('es-US', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+}
+
+function show(i) {
+  cur = (i + slides.length) % slides.length;
+  slides.forEach((s, k) => s.classList.toggle('on', k === cur));
+  $('fMid').textContent = `${cur + 1} / ${slides.length}`;
+  const bar = $('bar');
+  bar.style.transition = 'none'; bar.style.width = '0';
+  clearTimeout(timer);
+  if (!paused) {
+    requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = `width ${ROTATE}s linear`; bar.style.width = '100%'; }));
+    timer = setTimeout(() => show(cur + 1), ROTATE * 1000);
+  }
+}
+
+async function load(file) {
+  $('err').textContent = '';
+  try {
+    const rows = parse(await file.arrayBuffer());
+    if (!rows.length) throw new Error('No encontré conductores. / No drivers found.');
+    build(rows); dateLabels();
+    $('upload').classList.add('hidden'); $('frame').classList.remove('hidden'); $('bar').classList.remove('hidden');
+    document.body.classList.add('playing');
+    paused = false; show(0);
+    $('hint').classList.add('show'); setTimeout(() => $('hint').classList.remove('show'), 6000);
+  } catch (e) { $('err').textContent = e.message; }
+}
+
+$('file').onchange = e => e.target.files[0] && load(e.target.files[0]);
+const drop = $('drop');
+['dragover', 'dragenter'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+document.addEventListener('drop', e => e.dataTransfer.files[0] && load(e.dataTransfer.files[0]));
+document.addEventListener('keydown', e => {
+  if (!slides.length) return;
+  if (e.key === 'ArrowRight') show(cur + 1);
+  else if (e.key === 'ArrowLeft') show(cur - 1);
+  else if (e.key === ' ') { e.preventDefault(); paused = !paused; show(cur); }
+  else if (e.key.toLowerCase() === 'u') { clearTimeout(timer); $('bar').classList.add('hidden'); $('frame').classList.add('hidden'); $('upload').classList.remove('hidden'); document.body.classList.remove('playing'); }
+});
+</script>
+<a class="nav-btn" id="navBtn" href="/">← Cumpleaños / Birthdays</a>
+<script>
+(() => {
+  const btn = document.getElementById('navBtn');
+  let t;
+  const always = () => !document.getElementById('upload').classList.contains('hidden');
+  const wake = () => {
+    btn.classList.add('show'); document.body.classList.add('mouse');
+    clearTimeout(t);
+    t = setTimeout(() => { if (!always()) { btn.classList.remove('show'); document.body.classList.remove('mouse'); } }, 3000);
+  };
+  document.addEventListener('mousemove', wake);
+  document.addEventListener('touchstart', wake);
+  if (always()) btn.classList.add('show');
+  setInterval(() => { if (always()) btn.classList.add('show'); }, 1000);
+})();
+</script>
+</body>
+</html>

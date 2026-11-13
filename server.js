@@ -138,6 +138,7 @@ async function servePhoto(id, res) {
 }
 
 const indexHtml = () => fs.readFileSync(path.join(__dirname, 'public', 'index.html'));
+const rutasHtml = () => fs.readFileSync(path.join(__dirname, 'public', 'rutas.html'));
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
@@ -155,6 +156,9 @@ const server = http.createServer(async (req, res) => {
   } else if (url.pathname === '/' || url.pathname === '/index.html') {
     res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
     res.end(indexHtml());
+  } else if (url.pathname === '/rutas' || url.pathname === '/rutas.html') {
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+    res.end(rutasHtml());
   } else {
     res.writeHead(404).end('Not found');
   }

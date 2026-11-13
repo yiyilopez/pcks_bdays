@@ -81,6 +81,9 @@
   .message p { font-size: calc(var(--u) * 2.3); color: var(--soft); font-weight: 300; max-width: calc(var(--u) * 62); text-wrap: balance; }
 
   .bar { position: fixed; left: 0; bottom: 0; height: 2px; background: var(--accent); width: 0; }
+  .nav-btn { position: fixed; top: calc(var(--u) * 1.4); left: 50%; transform: translateX(-50%); z-index: 10; padding: calc(var(--u) * .8) calc(var(--u) * 2); background: var(--accent); color: #fff; text-decoration: none; border-radius: 999px; font-size: calc(var(--u) * 1.2); letter-spacing: .08em; font-family: inherit; box-shadow: 0 calc(var(--u) * .5) calc(var(--u) * 1.5) #30305b33; opacity: 0; pointer-events: none; transition: opacity .4s; }
+  .nav-btn.show, .nav-btn:hover { opacity: 1; pointer-events: auto; }
+  body.mouse, body.mouse.playing { cursor: auto; }
 </style>
 </head>
 <body>
@@ -207,6 +210,23 @@ async function load() {
 }
 load();
 setInterval(load, 5 * 60 * 1000);
+</script>
+<a class="nav-btn" id="navBtn" href="/rutas">Rutas de hoy / Today's routes →</a>
+<script>
+(() => {
+  const btn = document.getElementById('navBtn');
+  let t;
+  const always = () => false;
+  const wake = () => {
+    btn.classList.add('show'); document.body.classList.add('mouse');
+    clearTimeout(t);
+    t = setTimeout(() => { if (!always()) { btn.classList.remove('show'); document.body.classList.remove('mouse'); } }, 3000);
+  };
+  document.addEventListener('mousemove', wake);
+  document.addEventListener('touchstart', wake);
+  if (always()) btn.classList.add('show');
+  setInterval(() => { if (always()) btn.classList.add('show'); }, 1000);
+})();
 </script>
 </body>
 </html>
